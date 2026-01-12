@@ -1,49 +1,49 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
-	static class Meeting implements Comparable<Meeting>{
-		int start, end;
+    static class Point {
+        int x;
+        int y;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 
-		public Meeting(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
 
-		@Override
-		public int compareTo(Meeting o) {
-			//끝나는 시간이 다르면 끝나는 시간 기준으로 비교
-			if(this.end != o.end)
-				return this.end - o.end;
-			//끝나는 시간이 같으면 시작 시간으로 비교
-			return this.start - o.start;
-		}
-	}
-	
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
-		List<Meeting> meeting = new ArrayList<>();
-		int cnt = 0;
-		int endTime = 0;
-		
-		for (int i = 0; i < N; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			int start = Integer.parseInt(st.nextToken());
-			int end = Integer.parseInt(st.nextToken());
-			
-			meeting.add(new Meeting(start, end));
-		}
-		
-		Collections.sort(meeting);
-		
-		for (int i = 0; i < N; i++) {
-			Meeting curr = meeting.get(i);
-			if(curr.start >= endTime) {
-				cnt++;
-				endTime = curr.end;
-			}
-		}
-		System.out.println(cnt);
-	}
+        List<Point> times = new ArrayList<>();
+
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            times.add(new Point(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+        }
+
+        times.sort((o1, o2) -> {
+            if (o1.y == o2.y) {
+                return o1.x - o2.x;
+            }else {
+                return o1.y - o2.y;
+            }
+        });
+
+        int endTime = times.get(0).y;
+        int result = 1;
+
+        for (int i = 1; i < N; i++) {
+            if (times.get(i).x >= endTime) {
+                endTime = times.get(i).y;
+                result++;
+            }
+        }
+
+        System.out.println(result);
+    }
 }
